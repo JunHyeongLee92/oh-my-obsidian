@@ -72,3 +72,14 @@ All subgraphs: `stroke-width:2px,rx:16`
 - The group background uses a lighter shade of the same hue as its nodes
 - Default to the 4-color palette; add purple only when there are 5 or more groups
 - Pick the diagram type that best fits the content (graph, sequence, classDiagram, ...)
+
+## Character escaping
+
+Message / Note text in `sequenceDiagram` is **not** HTML-decoded the way quoted `flowchart` / `graph` node labels are. Writing `&lt;` or `&gt;` inside a sequenceDiagram line raises `Parse error ... got 'NEWLINE'` in Obsidian's renderer.
+
+| Context                                | Angle brackets                        | Alternative                        |
+|----------------------------------------|---------------------------------------|------------------------------------|
+| `flowchart` / `graph` quoted node label| `&lt;name&gt;` renders as `<name>`     | `[name]` also fine                 |
+| `sequenceDiagram` message / Note       | ❌ neither `<name>` nor `&lt;name&gt;` | `[name]`, backticks, or quotes     |
+
+Rule of thumb: for any placeholder that would normally be written `<URL>` / `<name>` / `<slug>`, prefer `[URL]` / `[name]` / `[slug]` in every diagram type — it renders correctly everywhere and avoids the sequence-parser trap.

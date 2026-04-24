@@ -1,6 +1,6 @@
 {
   "name": "oh-my-obsidian",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Turn any Obsidian vault into an LLM-maintained wiki. Ingest URLs, auto-structure notes by schema, run weekly digests, and keep cross-project records in one data hub.",
   "author": {
     "name": "junehyeong.lee"
