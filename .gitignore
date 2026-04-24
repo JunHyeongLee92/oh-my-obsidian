@@ -1,0 +1,30 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*~
+
+# Node (scripts use node via npx, no node_modules expected)
+node_modules/
+
+# Local test artifacts
+/tmp/
+*.log
+
+# Claude Code session artifacts if any end up here
+.claude/sessions/
+
+CLAUDE.md
+docs/**
+!docs/architecture.*
+!docs/compounding.*
+!docs/troubleshooting.md
+!docs/troubleshooting.ko.md
+!docs/git-sync.md
+!docs/git-sync.ko.md
+!docs/concepts.md
+!docs/concepts.ko.md

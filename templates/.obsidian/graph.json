@@ -1,0 +1,47 @@
+{
+  "collapse-filter": false,
+  "search": "-path:\"_sources/\" -path:\"_ops/\" -file:\"README.md\" -file:\"README.ko.md\"",
+  "showTags": false,
+  "showAttachments": false,
+  "hideUnresolved": false,
+  "showOrphans": true,
+  "collapse-color-groups": true,
+  "colorGroups": [
+    {
+      "query": "path:\"wiki/concepts/\"",
+      "color": { "a": 1, "rgb": 6139362 }
+    },
+    {
+      "query": "path:\"wiki/entities/\"",
+      "color": { "a": 1, "rgb": 5822093 }
+    },
+    {
+      "query": "path:\"wiki/guides/\"",
+      "color": { "a": 1, "rgb": 15965202 }
+    },
+    {
+      "query": "path:\"wiki/digests/\" OR path:\"wiki/summaries/\"",
+      "color": { "a": 1, "rgb": 12292046 }
+    },
+    {
+      "query": "path:\"projects/\" -path:\"worklog/\"",
+      "color": { "a": 1, "rgb": 15495267 }
+    },
+    {
+      "query": "path:\"worklog/\"",
+      "color": { "a": 1, "rgb": 9807270 }
+    }
+  ],
+  "collapse-display": true,
+  "showArrow": false,
+  "textFadeMultiplier": 0,
+  "nodeSizeMultiplier": 1,
+  "lineSizeMultiplier": 1,
+  "collapse-forces": true,
+  "centerStrength": 0.518713248970312,
+  "repelStrength": 10,
+  "linkStrength": 1,
+  "linkDistance": 250,
+  "scale": 0.25883865621816216,
+  "close": false
+}

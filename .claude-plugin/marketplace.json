@@ -1,0 +1,38 @@
+{
+  "name": "oh-my-obsidian",
+  "owner": {
+    "name": "junehyeong.lee"
+  },
+  "metadata": {
+    "description": "Harness-engineering plugin that turns an Obsidian vault into an LLM-maintained wiki."
+  },
+  "plugins": [
+    {
+      "name": "oh-my-obsidian",
+      "source": "./",
+      "description": "Turn any Obsidian vault into an LLM-maintained wiki. Ingest URLs, auto-structure notes by schema, run weekly digests, and keep cross-project records in one data hub.",
+      "version": "0.0.1",
+      "author": {
+        "name": "junehyeong.lee"
+      },
+      "license": "MIT",
+      "keywords": [
+        "obsidian",
+        "wiki",
+        "llm-wiki",
+        "harness-engineering",
+        "knowledge-base",
+        "ingest"
+      ],
+      "category": "workflow",
+      "tags": [
+        "obsidian",
+        "wiki",
+        "ingest",
+        "knowledge-base",
+        "harness"
+      ],
+      "strict": false
+    }
+  ]
+}

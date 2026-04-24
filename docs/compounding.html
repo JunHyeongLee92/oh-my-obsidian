@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>OMO — Knowledge compounding loop</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #ffffff; font-family: 'IBM Plex Sans', -apple-system, sans-serif; }
+  .stage { padding: 40px; display: flex; justify-content: center; }
+  svg { display: block; }
+  .col-label { font: 600 9px/1 'IBM Plex Mono', monospace; fill: #888; letter-spacing: 1.8px; }
+  .pill { font: 600 8px/1 'IBM Plex Mono', monospace; letter-spacing: 1.2px; }
+  .card-title { font: 600 13px/1 'IBM Plex Sans', sans-serif; fill: #1a1a1a; }
+  .card-sub { font: 400 10px/1 'IBM Plex Sans', sans-serif; fill: #6b6b6b; }
+  .card-note { font: 400 9px/1 'IBM Plex Sans', sans-serif; fill: #8a8a8a; }
+  .bullet { font: 400 10px/1.6 'IBM Plex Mono', monospace; fill: #444; }
+  .action-label { font: 500 9px/1 'IBM Plex Mono', monospace; fill: #5741d8; }
+  .miss-label { font: 400 9px/1 'IBM Plex Mono', monospace; fill: #999; }
+  .header-title { font: 600 18px/1 'IBM Plex Sans', sans-serif; fill: #1a1a1a; }
+  .header-sub { font: 400 11px/1.4 'IBM Plex Sans', sans-serif; fill: #666; }
+  .promote-pill-text { font: 600 11px/1 'IBM Plex Sans', sans-serif; fill: white; }
+  .loop-caption { font: 500 10.5px/1.4 'IBM Plex Sans', sans-serif; fill: #5741d8; font-style: italic; }
+</style>
+</head>
+<body>
+<div class="stage">
+<svg viewBox="0 0 1000 740" width="1000" height="740" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="subtle-shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.08"/>
+    </filter>
+    <marker id="arrow-purple" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L6,3 z" fill="#5741d8"/>
+    </marker>
+    <marker id="arrow-gray" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L6,3 z" fill="#999"/>
+    </marker>
+    <marker id="arrow-purple-bold" markerWidth="10" markerHeight="10" refX="7" refY="4" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,8 L8,4 z" fill="#7132f5"/>
+    </marker>
+  </defs>
+
+  <!-- ====== TITLE ====== -->
+  <text x="500" y="40" text-anchor="middle" class="header-title">Knowledge compounding loop</text>
+  <text x="500" y="62" text-anchor="middle" class="header-sub">Each answered query can grow the wiki — the next query resolves faster.</text>
+
+  <!-- ====== INGEST COLUMN ====== -->
+  <rect x="60" y="95" width="380" height="490" rx="16" fill="#fafafa" stroke="#d0d0d0" stroke-dasharray="4 3"/>
+  <text x="80" y="120" class="col-label">INGEST</text>
+
+  <!-- URL card -->
+  <rect x="140" y="140" width="220" height="52" rx="10" fill="white" stroke="#e0e0e0" filter="url(#subtle-shadow)"/>
+  <text x="250" y="163" text-anchor="middle" class="card-title">URL</text>
+  <text x="250" y="181" text-anchor="middle" class="card-sub">web article · paper · conversation</text>
+
+  <!-- extract arrow + label -->
+  <path d="M 250 196 L 250 228" stroke="#5741d8" stroke-width="2" marker-end="url(#arrow-purple)" fill="none"/>
+  <text x="262" y="216" class="action-label">extract</text>
+
+  <!-- _sources card -->
+  <rect x="110" y="232" width="280" height="74" rx="10" fill="white" stroke="#e0e0e0" filter="url(#subtle-shadow)"/>
+  <text x="127" y="252" class="pill" fill="#888">ORIGINAL · IMMUTABLE</text>
+  <text x="127" y="272" class="card-title">_sources/</text>
+  <text x="127" y="291" class="card-sub">articles · papers · conversations</text>
+
+  <!-- structure arrow + label -->
+  <path d="M 250 310 L 250 342" stroke="#5741d8" stroke-width="2" marker-end="url(#arrow-purple)" fill="none"/>
+  <text x="262" y="330" class="action-label">structure</text>
+
+  <!-- wiki card (focal, purple subtle fill) -->
+  <rect x="110" y="346" width="280" height="220" rx="12" fill="rgba(133,91,251,0.16)" stroke="#5741d8" stroke-width="1.5" filter="url(#subtle-shadow)"/>
+  <text x="127" y="366" class="pill" fill="#5741d8">KNOWLEDGE LAYER</text>
+  <text x="127" y="389" class="card-title" font-size="15">wiki/</text>
+  <text x="127" y="407" class="card-sub">LLM-curated pages · grows over time</text>
+
+  <line x1="127" y1="420" x2="373" y2="420" stroke="#b8a8d8" stroke-dasharray="2 2"/>
+
+  <text x="127" y="441" class="bullet">entities/</text>
+  <text x="127" y="460" class="bullet">concepts/</text>
+  <text x="127" y="479" class="bullet">guides/</text>
+  <text x="127" y="498" class="bullet">summaries/</text>
+  <text x="127" y="517" class="bullet">digests/</text>
+
+  <!-- grow indicator at bottom of wiki card -->
+  <text x="250" y="548" text-anchor="middle" font-size="10" font-weight="600" fill="#5741d8" font-family="IBM Plex Mono">↑ new pages land here ↑</text>
+
+  <!-- ====== QUERY COLUMN ====== -->
+  <rect x="560" y="95" width="380" height="490" rx="16" fill="#fafafa" stroke="#d0d0d0" stroke-dasharray="4 3"/>
+  <text x="580" y="120" class="col-label">QUERY</text>
+
+  <!-- Question card -->
+  <rect x="640" y="140" width="220" height="52" rx="10" fill="white" stroke="#e0e0e0" filter="url(#subtle-shadow)"/>
+  <text x="750" y="163" text-anchor="middle" class="card-title">Question</text>
+  <text x="750" y="181" text-anchor="middle" class="card-sub">user · /omo-query · natural language</text>
+
+  <!-- arrow down to search subgroup -->
+  <path d="M 750 196 L 750 216" stroke="#5741d8" stroke-width="2" marker-end="url(#arrow-purple)" fill="none"/>
+
+  <!-- ====== Vault Search subgroup (Tier 1/2/3 internal fallback) ====== -->
+  <rect x="578" y="220" width="344" height="260" rx="14" fill="#f6f3fc" stroke="#d6cfea" stroke-width="1"/>
+  <text x="595" y="240" class="pill" fill="#5741d8">VAULT SEARCH · 3-TIER FALLBACK</text>
+
+  <!-- Tier 1 -->
+  <rect x="590" y="252" width="320" height="56" rx="10" fill="white" stroke="#e0e0e0" filter="url(#subtle-shadow)"/>
+  <text x="607" y="270" class="pill" fill="#888">TIER 1 · PRIMARY</text>
+  <text x="607" y="287" class="card-title">index + wikilinks graph</text>
+  <text x="607" y="302" class="card-sub">O(related pages) · fast when vault is well-kept</text>
+
+  <!-- miss arrow -->
+  <path d="M 750 308 L 750 326" stroke="#999" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arrow-gray)" fill="none"/>
+  <text x="762" y="320" class="miss-label">miss</text>
+
+  <!-- Tier 2 -->
+  <rect x="590" y="330" width="320" height="56" rx="10" fill="white" stroke="#e0e0e0" filter="url(#subtle-shadow)"/>
+  <text x="607" y="348" class="pill" fill="#888">TIER 2 · FALLBACK</text>
+  <text x="607" y="365" class="card-title">qmd hybrid search</text>
+  <text x="607" y="380" class="card-sub">BM25 + semantic embeddings + reranking</text>
+
+  <!-- miss arrow -->
+  <path d="M 750 386 L 750 404" stroke="#999" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arrow-gray)" fill="none"/>
+  <text x="762" y="398" class="miss-label">miss</text>
+
+  <!-- Tier 3 -->
+  <rect x="590" y="408" width="320" height="56" rx="10" fill="white" stroke="#e0e0e0" filter="url(#subtle-shadow)"/>
+  <text x="607" y="426" class="pill" fill="#888">TIER 3 · LAST RESORT</text>
+  <text x="607" y="443" class="card-title">Grep full-vault scan</text>
+  <text x="607" y="458" class="card-sub">linear scan · always works</text>
+
+  <!-- arrow from subgroup to Answer -->
+  <path d="M 750 480 L 750 500" stroke="#5741d8" stroke-width="2" marker-end="url(#arrow-purple)" fill="none"/>
+  <text x="762" y="494" class="action-label">synthesize</text>
+
+  <!-- Answer card -->
+  <rect x="610" y="504" width="280" height="62" rx="10" fill="white" stroke="#e0e0e0" filter="url(#subtle-shadow)"/>
+  <text x="626" y="522" class="pill" fill="#888">OUTPUT</text>
+  <text x="626" y="541" class="card-title">Synthesized answer</text>
+  <text x="626" y="557" class="card-sub">cites source pages via [[wikilinks]]</text>
+
+  <!-- ====== FEEDBACK LOOP — the key message ====== -->
+  <!-- Dashed bulk: Answer (right, bottom) → down → across → up toward wiki -->
+  <path d="M 750 566 C 750 675, 250 685, 250 584"
+        stroke="#7132f5" stroke-width="3" stroke-dasharray="7 4"
+        stroke-linecap="round" fill="none"/>
+  <!-- Solid approach stub: bridges dashed curve to arrowhead for clean landing -->
+  <path d="M 250 584 L 250 566"
+        stroke="#7132f5" stroke-width="3"
+        marker-end="url(#arrow-purple-bold)" fill="none"/>
+
+  <!-- Auto-promote pill, placed on the curve -->
+  <rect x="390" y="660" width="220" height="32" rx="16" fill="#7132f5" filter="url(#subtle-shadow)"/>
+  <text x="500" y="680" text-anchor="middle" class="promote-pill-text">auto-promote (if reusable)</text>
+
+  <!-- Caption under the loop -->
+  <text x="500" y="720" text-anchor="middle" class="loop-caption">Wiki grows with each answer → next time Tier 1 resolves it directly</text>
+</svg>
+</div>
+</body>
+</html>

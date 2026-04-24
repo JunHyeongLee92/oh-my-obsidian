@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>oh-my-obsidian · Architecture</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --paper: #ffffff;
+        --paper-2: #f7f7fa;
+        --ink: #101114;
+        --muted: #686b82;
+        --soft: #9497a9;
+        --rule: #dedee5;
+        --accent: #7132f5;
+        --accent-dark: #5741d8;
+        --accent-tint: rgba(133, 91, 251, 0.16);
+        --font-sans:
+          "IBM Plex Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+      }
+
+      html, body {
+        margin: 0;
+        padding: 0;
+        background: var(--paper);
+        color: var(--ink);
+        font-family: var(--font-sans);
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .stage {
+        padding: 40px;
+        display: flex;
+        justify-content: center;
+      }
+
+      svg {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="stage">
+      <svg viewBox="0 -100 1000 720" width="1000" height="720" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, Helvetica, Arial, sans-serif">
+        <text x="500" y="-65" text-anchor="middle" font-size="18" font-weight="600" fill="#1a1a1a">LLM-maintained knowledge hub</text>
+        <text x="500" y="-40" text-anchor="middle" font-size="11" fill="#666">URLs and commands enter the OMO harness, which writes originals into _sources/ and structures them into wiki/.</text>
+        <text x="500" y="-22" text-anchor="middle" font-size="11" fill="#666">Linked git projects reference the vault back; a commit triggers the staleness hook.</text>
+          <defs>
+            <pattern id="dots" width="22" height="22" patternUnits="userSpaceOnUse">
+              <circle cx="1" cy="1" r="0.9" fill="rgba(104,107,130,0.10)" />
+            </pattern>
+            <marker id="arrow-muted" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+              <polygon points="0 0, 8 3, 0 6" fill="#686b82" />
+            </marker>
+            <marker id="arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+              <polygon points="0 0, 8 3, 0 6" fill="#7132f5" />
+            </marker>
+            <marker id="arrow-dark" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+              <polygon points="0 0, 8 3, 0 6" fill="#5741d8" />
+            </marker>
+            <filter id="subtle-shadow" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000" flood-opacity="0.03" />
+            </filter>
+          </defs>
+
+          <!-- Background -->
+          <rect width="100%" height="100%" fill="#f7f7fa" />
+          <rect width="100%" height="100%" fill="url(#dots)" opacity="0.6" />
+
+          <!-- Group frames -->
+          <rect x="40" y="60" width="240" height="340" rx="10"
+                fill="none" stroke="#dedee5" stroke-dasharray="4 4" />
+          <rect x="60" y="50" width="144" height="20" fill="#f7f7fa" />
+          <text x="72" y="64" font-family="IBM Plex Mono" font-size="10" font-weight="500"
+                letter-spacing="1.4" fill="#686b82">ACTORS &amp; FEEDS</text>
+
+          <rect x="320" y="60" width="360" height="340" rx="10"
+                fill="none" stroke="#5741d8" stroke-dasharray="4 4" />
+          <rect x="340" y="50" width="128" height="20" fill="#f7f7fa" />
+          <text x="352" y="64" font-family="IBM Plex Mono" font-size="10" font-weight="500"
+                letter-spacing="1.4" fill="#686b82">OMO HARNESS</text>
+
+          <rect x="720" y="60" width="240" height="340" rx="10"
+                fill="none" stroke="#5741d8" stroke-dasharray="4 4" />
+          <rect x="740" y="50" width="180" height="20" fill="#f7f7fa" />
+          <text x="752" y="64" font-family="IBM Plex Mono" font-size="10" font-weight="500"
+                letter-spacing="1.4" fill="#686b82">OBSIDIAN VAULT · HUB</text>
+
+          <rect x="40" y="440" width="920" height="140" rx="10"
+                fill="none" stroke="#dedee5" stroke-dasharray="4 4" />
+          <rect x="60" y="430" width="132" height="20" fill="#f7f7fa" />
+          <text x="72" y="444" font-family="IBM Plex Mono" font-size="10" font-weight="500"
+                letter-spacing="1.4" fill="#686b82">GIT PROJECTS (N)</text>
+
+          <!-- Sources cards (inner padding 20px to match HARNESS/VAULT groups) -->
+          <rect x="60" y="100" width="200" height="80" rx="8"
+                fill="#ffffff" stroke="#dedee5" />
+          <rect x="72" y="112" width="42" height="14" rx="3" fill="#f7f7fa" />
+          <text x="78" y="122" font-family="IBM Plex Mono" font-size="7" font-weight="500"
+                letter-spacing="1" fill="#686b82">USER</text>
+          <text x="72" y="148" font-family="IBM Plex Sans" font-size="16" font-weight="600" fill="#101114">User</text>
+          <text x="72" y="168" font-family="IBM Plex Sans" font-size="12" font-weight="400" fill="#686b82">Claude Code</text>
+
+          <rect x="60" y="240" width="200" height="80" rx="8"
+                fill="#ffffff" stroke="#dedee5" />
+          <rect x="72" y="252" width="34" height="14" rx="3" fill="#f7f7fa" />
+          <text x="78" y="262" font-family="IBM Plex Mono" font-size="7" font-weight="500"
+                letter-spacing="1" fill="#686b82">EXT</text>
+          <text x="72" y="288" font-family="IBM Plex Sans" font-size="16" font-weight="600" fill="#101114">URLs</text>
+          <text x="72" y="308" font-family="IBM Plex Sans" font-size="12" font-weight="400" fill="#686b82">articles · papers</text>
+
+          <!-- OMO Harness cards -->
+          <rect x="340" y="90" width="320" height="100" rx="8"
+                fill="rgba(133,91,251,0.16)" stroke="#5741d8" stroke-width="1.5"
+                filter="url(#subtle-shadow)" />
+          <rect x="352" y="102" width="48" height="14" rx="3" fill="#ffffff" />
+          <text x="358" y="112" font-family="IBM Plex Mono" font-size="7" font-weight="500"
+                letter-spacing="1" fill="#5741d8">SKILL</text>
+          <text x="500" y="156" font-family="IBM Plex Sans" font-size="22" font-weight="700"
+                fill="#101114" text-anchor="middle">Skills</text>
+
+          <rect x="340" y="230" width="320" height="70" rx="8"
+                fill="#ffffff" stroke="#dedee5" />
+          <rect x="352" y="242" width="44" height="14" rx="3" fill="#f7f7fa" />
+          <text x="358" y="252" font-family="IBM Plex Mono" font-size="7" font-weight="500"
+                letter-spacing="1" fill="#686b82">CRON</text>
+          <text x="352" y="276" font-family="IBM Plex Sans" font-size="15" font-weight="600" fill="#101114">Cron jobs</text>
+          <text x="352" y="294" font-family="IBM Plex Sans" font-size="12" font-weight="400" fill="#686b82">daily lint · weekly digest</text>
+
+          <rect x="340" y="320" width="320" height="70" rx="8"
+                fill="#ffffff" stroke="#dedee5" />
+          <rect x="352" y="332" width="48" height="14" rx="3" fill="#f7f7fa" />
+          <text x="358" y="342" font-family="IBM Plex Mono" font-size="7" font-weight="500"
+                letter-spacing="1" fill="#686b82">HOOK</text>
+          <text x="352" y="366" font-family="IBM Plex Sans" font-size="15" font-weight="600" fill="#101114">Hooks</text>
+          <text x="352" y="384" font-family="IBM Plex Sans" font-size="12" font-weight="400" fill="#686b82">wiki-staleness-check</text>
+
+          <!-- Obsidian Vault cards -->
+          <!-- _sources/ (top, store) — title + subtitle split for consistency -->
+          <rect x="740" y="90" width="200" height="70" rx="8"
+                fill="#ffffff" stroke="#dedee5" />
+          <rect x="752" y="102" width="50" height="14" rx="3" fill="#f7f7fa" />
+          <text x="758" y="112" font-family="IBM Plex Mono" font-size="7" font-weight="500"
+                letter-spacing="1" fill="#686b82">STORE</text>
+          <text x="752" y="136" font-family="IBM Plex Sans" font-size="15" font-weight="600" fill="#101114">_sources/</text>
+          <text x="752" y="152" font-family="IBM Plex Sans" font-size="11" font-weight="400" fill="#686b82">immutable originals</text>
+
+          <!-- wiki/ (middle, focal hub) — shifted down to accommodate taller _sources -->
+          <rect x="740" y="190" width="200" height="114" rx="8"
+                fill="rgba(133,91,251,0.16)" stroke="#5741d8" stroke-width="1.5"
+                filter="url(#subtle-shadow)" />
+          <rect x="752" y="202" width="42" height="14" rx="3" fill="#ffffff" />
+          <text x="758" y="212" font-family="IBM Plex Mono" font-size="7" font-weight="500"
+                letter-spacing="1" fill="#5741d8">HUB</text>
+          <text x="752" y="234" font-family="IBM Plex Sans" font-size="17" font-weight="700" fill="#101114">wiki/</text>
+          <text x="752" y="252" font-family="IBM Plex Sans" font-size="11" font-weight="400" fill="#686b82">LLM-maintained knowledge</text>
+          <text x="752" y="278" font-family="IBM Plex Mono" font-size="10" font-weight="500" fill="#5741d8">entities · concepts · guides</text>
+          <text x="752" y="292" font-family="IBM Plex Mono" font-size="10" font-weight="500" fill="#5741d8">summaries · digests</text>
+
+          <!-- projects/ (bottom, workspace card — sibling to wiki at vault level) -->
+          <rect x="740" y="319" width="200" height="70" rx="8"
+                fill="#ffffff" stroke="#dedee5" />
+          <rect x="752" y="331" width="72" height="14" rx="3" fill="#f7f7fa" />
+          <text x="758" y="341" font-family="IBM Plex Mono" font-size="7" font-weight="500"
+                letter-spacing="1" fill="#686b82">WORKSPACE</text>
+          <text x="752" y="365" font-family="IBM Plex Sans" font-size="15" font-weight="600" fill="#101114">projects/</text>
+          <text x="752" y="381" font-family="IBM Plex Sans" font-size="11" font-weight="400" fill="#686b82">docs · worklog · decisions</text>
+
+          <!-- Git Projects cards (pill + title, same 4-zone convention as other cards) -->
+          <rect x="100" y="480" width="160" height="70" rx="8"
+                fill="#ffffff" stroke="#dedee5" />
+          <rect x="112" y="492" width="56" height="14" rx="3" fill="#f7f7fa" />
+          <text x="118" y="502" font-family="IBM Plex Mono" font-size="7" font-weight="500"
+                letter-spacing="1" fill="#686b82">PROJECT</text>
+          <text x="180" y="530" font-family="IBM Plex Mono" font-size="13" font-weight="500"
+                fill="#101114" text-anchor="middle">project-a</text>
+
+          <rect x="300" y="480" width="160" height="70" rx="8"
+                fill="#ffffff" stroke="#dedee5" />
+          <rect x="312" y="492" width="56" height="14" rx="3" fill="#f7f7fa" />
+          <text x="318" y="502" font-family="IBM Plex Mono" font-size="7" font-weight="500"
+                letter-spacing="1" fill="#686b82">PROJECT</text>
+          <text x="380" y="530" font-family="IBM Plex Mono" font-size="13" font-weight="500"
+                fill="#101114" text-anchor="middle">project-b</text>
+
+          <text x="540" y="532" font-family="IBM Plex Sans" font-size="22" font-weight="600"
+                fill="#9497a9" text-anchor="middle">…</text>
+
+          <rect x="620" y="480" width="160" height="70" rx="8"
+                fill="#ffffff" stroke="#dedee5" />
+          <rect x="632" y="492" width="56" height="14" rx="3" fill="#f7f7fa" />
+          <text x="638" y="502" font-family="IBM Plex Mono" font-size="7" font-weight="500"
+                letter-spacing="1" fill="#686b82">PROJECT</text>
+          <text x="700" y="530" font-family="IBM Plex Mono" font-size="13" font-weight="500"
+                fill="#101114" text-anchor="middle">project-n</text>
+
+          <!-- Arrows -->
+          <!-- User -> Skills : CMD -->
+          <path d="M 260 140 L 336 140" stroke="#7132f5" stroke-width="1.5"
+                fill="none" marker-end="url(#arrow-accent)" />
+          <rect x="278" y="133" width="40" height="14" fill="#f7f7fa" />
+          <text x="298" y="143" font-family="IBM Plex Mono" font-size="10" font-weight="500"
+                letter-spacing="1" fill="#5741d8" text-anchor="middle">CMD</text>
+
+          <!-- URLs -> Skills : FETCH (smooth single-curve) -->
+          <path d="M 260 280 Q 295 215 336 170" stroke="#686b82" stroke-width="1.3"
+                fill="none" stroke-dasharray="5 4" marker-end="url(#arrow-muted)" />
+          <rect x="270" y="205" width="46" height="14" fill="#f7f7fa" />
+          <text x="293" y="215" font-family="IBM Plex Mono" font-size="10" font-weight="500"
+                letter-spacing="1" fill="#686b82" text-anchor="middle">FETCH</text>
+
+          <!-- Skills -> _sources : INGEST (primary, accent) -->
+          <path d="M 660 115 L 736 115" stroke="#7132f5" stroke-width="1.5"
+                fill="none" marker-end="url(#arrow-accent)" />
+          <rect x="676" y="108" width="52" height="14" fill="#f7f7fa" />
+          <text x="702" y="118" font-family="IBM Plex Mono" font-size="10" font-weight="500"
+                letter-spacing="1" fill="#5741d8" text-anchor="middle">INGEST</text>
+
+          <!-- _sources -> wiki : STRUCTURE (primary, accent, vertical) -->
+          <path d="M 840 160 L 840 186" stroke="#7132f5" stroke-width="1.5"
+                fill="none" marker-end="url(#arrow-accent)" />
+          <rect x="812" y="166" width="68" height="14" fill="#f7f7fa" />
+          <text x="846" y="176" font-family="IBM Plex Mono" font-size="10" font-weight="500"
+                letter-spacing="1" fill="#5741d8" text-anchor="middle">STRUCTURE</text>
+
+          <!-- Skills <- wiki : READ (from wiki to Skills) -->
+          <path d="M 740 210 L 664 175" stroke="#686b82" stroke-width="1.3"
+                fill="none" marker-end="url(#arrow-muted)" />
+          <rect x="680" y="183" width="40" height="14" fill="#f7f7fa" />
+          <text x="700" y="193" font-family="IBM Plex Mono" font-size="10" font-weight="500"
+                letter-spacing="1" fill="#686b82" text-anchor="middle">READ</text>
+
+          <!-- Skills -> projects : UPDATE (primary, accent, curve through CRON & HOOK) -->
+          <path d="M 620 190 Q 600 425 736 351" stroke="#7132f5" stroke-width="1.5"
+                fill="none" marker-end="url(#arrow-accent)" />
+          <rect x="600" y="300" width="54" height="14" fill="#f7f7fa" />
+          <text x="627" y="310" font-family="IBM Plex Mono" font-size="10" font-weight="500"
+                letter-spacing="1" fill="#5741d8" text-anchor="middle">UPDATE</text>
+
+          <!-- Cron -> wiki : SCHEDULE (dashed) -->
+          <path d="M 660 265 L 736 265" stroke="#686b82" stroke-width="1.3"
+                fill="none" stroke-dasharray="5 4" marker-end="url(#arrow-muted)" />
+          <rect x="668" y="258" width="64" height="14" fill="#f7f7fa" />
+          <text x="700" y="268" font-family="IBM Plex Mono" font-size="10" font-weight="500"
+                letter-spacing="1" fill="#686b82" text-anchor="middle">SCHEDULE</text>
+
+          <!-- Projects -> Hooks : COMMIT (dashed, upward) -->
+          <path d="M 500 478 L 500 392" stroke="#686b82" stroke-width="1.3"
+                fill="none" stroke-dasharray="5 4" marker-end="url(#arrow-muted)" />
+          <rect x="478" y="427" width="54" height="14" fill="#f7f7fa" />
+          <text x="505" y="437" font-family="IBM Plex Mono" font-size="10" font-weight="500"
+                letter-spacing="1" fill="#686b82" text-anchor="middle">COMMIT</text>
+
+          <!-- Hooks -> User : STALE WARN (dashed, wraps left) -->
+          <path d="M 340 360 Q 160 360 160 180" stroke="#686b82" stroke-width="1.3"
+                fill="none" stroke-dasharray="5 4" marker-end="url(#arrow-muted)" />
+          <rect x="250" y="353" width="76" height="14" fill="#f7f7fa" />
+          <text x="288" y="363" font-family="IBM Plex Mono" font-size="10" font-weight="500"
+                letter-spacing="1" fill="#686b82" text-anchor="middle">STALE WARN</text>
+
+          <!-- Legend -->
+          <line x1="40" y1="592" x2="960" y2="592" stroke="#dedee5" />
+          <text x="40" y="610" font-family="IBM Plex Mono" font-size="10" font-weight="500"
+                letter-spacing="1.4" fill="#686b82">LEGEND</text>
+          <rect x="110" y="601" width="12" height="12" rx="2"
+                fill="rgba(133,91,251,0.16)" stroke="#5741d8" />
+          <text x="128" y="610" font-family="IBM Plex Sans" font-size="11" fill="#686b82">Focal</text>
+          <rect x="180" y="601" width="12" height="12" rx="2" fill="#ffffff" stroke="#dedee5" />
+          <text x="198" y="610" font-family="IBM Plex Sans" font-size="11" fill="#686b82">Card</text>
+          <line x1="250" y1="607" x2="278" y2="607" stroke="#7132f5" stroke-width="1.5"
+                marker-end="url(#arrow-accent)" />
+          <text x="286" y="610" font-family="IBM Plex Sans" font-size="11" fill="#686b82">Primary flow</text>
+          <line x1="380" y1="607" x2="408" y2="607" stroke="#686b82" stroke-width="1.3"
+                marker-end="url(#arrow-muted)" />
+          <text x="416" y="610" font-family="IBM Plex Sans" font-size="11" fill="#686b82">Internal</text>
+          <line x1="486" y1="607" x2="514" y2="607" stroke="#686b82" stroke-width="1.3"
+                stroke-dasharray="5 4" marker-end="url(#arrow-muted)" />
+          <text x="522" y="610" font-family="IBM Plex Sans" font-size="11" fill="#686b82">Scheduled / event</text>
+      </svg>
+    </div>
+  </body>
+</html>

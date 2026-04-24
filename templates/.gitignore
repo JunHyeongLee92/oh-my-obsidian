@@ -1,0 +1,20 @@
+# OMO lint output — ignore timestamped reports, track only the per-machine latest
+_ops/lint-reports/*.md
+!_ops/lint-reports/latest-*.md
+_ops/lint-reports/cron.log
+
+# Obsidian local workspace (per-machine, no need to share)
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/cache
+
+# Obsidian vault-local trash (created only when Settings → Files → "Obsidian trash" is enabled)
+.trash/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+*.swp
+*~
