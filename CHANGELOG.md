@@ -6,6 +6,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 ## [Unreleased]
 
+## [0.0.3] - 2026-04-24
+
+### Fixed
+
+- `.claude-plugin/marketplace.json` 의 `plugins[0].version` 이 `0.0.1` 에 고정되어 있어, `plugin.json` 만 bump해도 `/plugin` UI가 구버전(0.0.1)을 표시하던 문제. marketplace.json과 plugin.json 버전을 함께 `0.0.3` 으로 동기화.
+
 ## [0.0.2] - 2026-04-24
 
 ### Fixed
