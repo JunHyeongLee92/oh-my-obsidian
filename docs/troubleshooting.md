@@ -286,12 +286,14 @@ command -v jq >/dev/null || { brew install jq; }   # or: apt-get install jq
 
 **Symptom**: After the plugin update, the staleness warning stops appearing on commit in projects that used to warn correctly.
 
-**Cause**: v0.0.3 renamed the project-contract key in `CLAUDE.md` from `프로젝트명:` (Korean) to `project-name:` (English). Projects linked with an older version still carry the Korean key, which the new hook no longer matches.
+**Cause**: v0.0.3 renamed the project-contract key in `CLAUDE.md` / `AGENTS.md` from `프로젝트명:` (Korean) to `project-name:` (English). Projects linked with an older version still carry the Korean key, which the new hook no longer matches.
 
 **Fix**: per linked project root:
 
 ```bash
 sed -i 's/- 프로젝트명: /- project-name: /' CLAUDE.md
+# or, for Codex projects:
+sed -i 's/- 프로젝트명: /- project-name: /' AGENTS.md
 ```
 
 Or re-run `/omo-project-add` — it overwrites the legacy line with the new key via an AskUserQuestion confirmation.

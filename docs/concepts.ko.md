@@ -25,7 +25,7 @@ Wiki는 "누적되는 artifact" — ingest마다 cross-reference가 늘고, dige
 - **보라색 focal** — Skills(오케스트레이션 진입점)와 wiki/(지식 허브). 시스템의 두 중심.
 - **실선** — 사용자 명령, 내부 읽기/쓰기 등 능동 동작
 - **점선** — 자동 이벤트 (URL fetch, cron 스케줄, commit 트리거, staleness 경고)
-- 프로젝트 N개가 **하나의 볼트**를 공유. 각 프로젝트는 `projects/<name>/`(wiki와 동등 레벨의 최상위 폴더)에 자신의 스크래치패드를 가지며, 프로젝트 `CLAUDE.md`가 볼트를 역참조한다.
+- 프로젝트 N개가 **하나의 볼트**를 공유. 각 프로젝트는 `projects/<name>/`(wiki와 동등 레벨의 최상위 폴더)에 자신의 스크래치패드를 가지며, 프로젝트 `CLAUDE.md` 또는 `AGENTS.md`가 볼트를 역참조한다.
 
 설계 원칙 상세는 [CONTRIBUTING.md § Architecture](../CONTRIBUTING.md#architecture) 참조.
 

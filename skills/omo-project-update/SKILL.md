@@ -38,7 +38,7 @@ VAULT=$(node -e "process.stdout.write(require('$CONFIG').vaultPath)")
 
 ### 2. Resolve the project name
 
-If no argument is passed, read `project-name:` from the cwd's `CLAUDE.md`; otherwise fall back to `basename $(git rev-parse --show-toplevel)`.
+If no argument is passed, read `project-name:` from the cwd's `CLAUDE.md` or `AGENTS.md`; otherwise fall back to `basename $(git rev-parse --show-toplevel)`.
 
 ```bash
 PROJECT_NAME="${1:-}"
@@ -47,7 +47,7 @@ if [ -z "$PROJECT_NAME" ]; then
     echo "Not a git repo. Pass the project name as an argument or run from inside the project root."
     exit 1
   }
-  PROJECT_NAME=$(grep -E '^[-*[:space:]]*project-name[[:space:]]*:' "$REPO_ROOT/CLAUDE.md" 2>/dev/null \
+  PROJECT_NAME=$(grep -Eh '^[-*[:space:]]*project-name[[:space:]]*:' "$REPO_ROOT/CLAUDE.md" "$REPO_ROOT/AGENTS.md" 2>/dev/null \
     | head -1 | sed -E 's#^[-*[:space:]]*project-name[[:space:]]*:[[:space:]]*##' | tr -d '` "' )
   PROJECT_NAME="${PROJECT_NAME:-$(basename "$REPO_ROOT")}"
 fi

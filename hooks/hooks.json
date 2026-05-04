@@ -10,7 +10,7 @@
             "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/wiki-staleness-check.sh\""
           }
         ],
-        "description": "Warn when a project's linked wiki page is stale after a git commit. Opt-in via project-name: <name> in project CLAUDE.md.",
+        "description": "Warn when a project's linked wiki page is stale after a git commit. Opt-in via project-name: <name> in project CLAUDE.md or AGENTS.md.",
         "id": "post:bash:wiki-staleness-check"
       }
     ]

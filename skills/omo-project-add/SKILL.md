@@ -1,13 +1,22 @@
 ---
 name: omo-project-add
-description: Link the current git project to the user's oh-my-obsidian vault. Detects project from cwd, adds a '## oh-my-obsidian' section with '- project-name: <name>' to the project CLAUDE.md, scaffolds <vault>/projects/<name>/ with index.md + worklog/ + decisions/, and registers it in wiki/index.md and wiki/log.md. Non-destructive — links to an existing wiki folder when one is already present. Use when the user says "/omo-project-add [<name>]", "link this project to the vault", "register this project with omo", "이 프로젝트 위키에 연동해줘", "omo 프로젝트 등록", or right after cloning a repo that should be tracked in the vault.
+description: >-
+  Link the current git project to the user's oh-my-obsidian vault. Detects
+  project from cwd, adds a '## oh-my-obsidian' section with '- project-name:
+  <name>' to the project instruction file (CLAUDE.md for Claude Code, AGENTS.md
+  for Codex), scaffolds <vault>/projects/<name>/ with index.md + worklog/ +
+  decisions/, and registers it in wiki/index.md and wiki/log.md. Non-destructive
+  — links to an existing wiki folder when one is already present. Use when the
+  user says "/omo-project-add [<name>]", "link this project to the vault",
+  "register this project with omo", "이 프로젝트 위키에 연동해줘", "omo 프로젝트 등록",
+  or right after cloning a repo that should be tracked in the vault.
 origin: oh-my-obsidian
 allowed-tools: Bash, Read, Write, Edit, AskUserQuestion
 ---
 
 # omo-project-add — link project ↔ vault
 
-Register the current git project with the oh-my-obsidian vault. Writes a single `project-name: <name>` line into the project's `CLAUDE.md` so the `wiki-staleness-check` hook works, and scaffolds the project page under the vault.
+Register the current git project with the oh-my-obsidian vault. Writes a single `project-name: <name>` line into the project's instruction file so the `wiki-staleness-check` hook works, and scaffolds the project page under the vault.
 
 **Non-destructive**: when `projects/<name>/` already exists, the skill treats it as a **Link-to-existing** situation (safe to re-run after `git clone` on another machine).
 
@@ -92,43 +101,59 @@ If the folder already exists, ask via **AskUserQuestion**:
 - header: `Existing wiki`
 - question: "`projects/$PROJECT_NAME/` already exists. Link to it?"
 - options:
-  - label: `Link to existing (Recommended)` / description: "Leave the wiki folder alone and just register in the project CLAUDE.md (already-created on another machine)"
+  - label: `Link to existing (Recommended)` / description: "Leave the wiki folder alone and just register in the project instruction file (already-created on another machine)"
   - label: `Cancel` / description: "Restart with a different name"
 
 On Cancel → return to Step 1 for a new name, or exit.
 
-### Step 3: Update CLAUDE.md
+### Step 3: Update the project instruction file
 
-Inspect the current state of the project's `CLAUDE.md`:
+Use the harness-native instruction file:
+- Claude Code: `CLAUDE.md`
+- Codex: `AGENTS.md`
+
+If both files already exist, update the one that already contains `## oh-my-obsidian` or `project-name:`. If neither contains an OMO section, use the harness-native file. This avoids writing Codex project state into `CLAUDE.md` or Claude Code project state into `AGENTS.md`.
 
 ```bash
-CLAUDE_MD="$REPO_ROOT/CLAUDE.md"
+if [ -n "${CODEX_HOME:-}" ] || [ -n "${CODEX_SANDBOX:-}" ]; then
+  DEFAULT_INSTRUCTIONS="$REPO_ROOT/AGENTS.md"
+else
+  DEFAULT_INSTRUCTIONS="$REPO_ROOT/CLAUDE.md"
+fi
+
+INSTRUCTIONS_FILE="$DEFAULT_INSTRUCTIONS"
+for candidate in "$REPO_ROOT/CLAUDE.md" "$REPO_ROOT/AGENTS.md"; do
+  if [ -f "$candidate" ] && grep -qE '(^## oh-my-obsidian$|project-name[[:space:]]*:)' "$candidate"; then
+    INSTRUCTIONS_FILE="$candidate"
+    break
+  fi
+done
 ```
 
 | Detected                                  | Action                                                                              |
 |-------------------------------------------|-------------------------------------------------------------------------------------|
-| File missing                              | Create from the "CLAUDE.md section template" below                                  |
+| File missing                              | Create from the "instruction section template" below                                |
 | No `## oh-my-obsidian` section            | Append the section to the end of the file                                           |
 | Section present but `project-name:` missing | Add the line inside the existing section                                            |
 | `project-name: <existing>` already present  | Confirm via Q3 below                                                                |
 
 **Question 3 — existing project name** (only when the existing value differs from `PROJECT_NAME`):
 - header: `Replace name`
-- question: "CLAUDE.md already has 'project-name: <existing>'. How should we handle it?"
+- question: "`<instruction-file>` already has 'project-name: <existing>'. How should we handle it?"
 - options:
   - label: `Replace with '$PROJECT_NAME'` / description: "Overwrite the existing value with the new name"
-  - label: `Skip` / description: "Leave CLAUDE.md as-is and go to Step 4"
+  - label: `Skip` / description: "Leave the instruction file as-is and go to Step 4"
 
 If the existing value matches, skip Q3 (no-op).
 
 **Question 4 — legacy key** (only when a `위키 경로:` line is detected):
 - header: `Legacy key`
-- question: "CLAUDE.md has a '위키 경로: ...' line (legacy format). Remove it?"
+- question: "`<instruction-file>` has a '위키 경로: ...' line (legacy format). Remove it?"
 - options:
   - label: `Remove` / description: "Clean up the pre-plugin remnant (recommended)"
   - label: `Keep` / description: "Leave it (does not affect the staleness hook)"
 
-### CLAUDE.md section template
+### Instruction section template
 
 ```markdown
 ## oh-my-obsidian
@@ -136,7 +161,7 @@ If the existing value matches, skip Q3 (no-op).
 - project-name: <PROJECT_NAME>
 ```
 
-The `wiki-staleness-check` hook reads the `project-name:` line and resolves `<vault>/projects/<name>/index.md` as the staleness target. Never use an absolute path.
+The `wiki-staleness-check` hook reads the `project-name:` line from `CLAUDE.md` or `AGENTS.md` and resolves `<vault>/projects/<name>/index.md` as the staleness target. Never use an absolute path.
 
 ### Step 4: Scaffold the vault project page
 
@@ -252,7 +277,7 @@ Repo: <REPO_URL>
 Mode: fresh (new folder) | link-existing (linked to existing folder)
 
 Modified / created files:
-- <repo>/CLAUDE.md (section / line added)
+- <repo>/<instruction-file> (section / line added)
 - <vault>/projects/<name>/index.md (scaffolded)
 - <vault>/projects/<name>/{worklog,decisions}/
 - <vault>/wiki/index.md (Projects registered)
@@ -289,7 +314,7 @@ Next steps:
 
 ## Anti-patterns
 
-- Putting an **absolute path** into the project `CLAUDE.md` (do not recreate the old `위키 경로:` form).
+- Putting an **absolute path** into the project instruction file (do not recreate the old `위키 경로:` form).
 - Overwriting existing `projects/<name>/` contents (destructive — violates the skill's design).
 - **Adding** a legacy `위키 경로:` key (only detect/remove — never write new).
 - Registering the vault itself as a project.

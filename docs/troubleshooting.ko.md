@@ -286,12 +286,14 @@ command -v jq >/dev/null || { brew install jq; }   # 또는: apt-get install jq
 
 **증상**: 플러그인 업데이트 후, 원래 경고가 뜨던 프로젝트에서도 staleness 경고가 안 나타남.
 
-**원인**: v0.0.3에서 `CLAUDE.md`의 프로젝트 계약 키를 `프로젝트명:` (한글) → `project-name:` (영문)으로 rename. 이전 버전에서 연결된 프로젝트는 여전히 한글 키를 쓰는데 새 hook은 매칭 안 함.
+**원인**: v0.0.3에서 `CLAUDE.md` / `AGENTS.md`의 프로젝트 계약 키를 `프로젝트명:` (한글) → `project-name:` (영문)으로 rename. 이전 버전에서 연결된 프로젝트는 여전히 한글 키를 쓰는데 새 hook은 매칭 안 함.
 
 **해결**: 연결된 각 프로젝트 루트에서
 
 ```bash
 sed -i 's/- 프로젝트명: /- project-name: /' CLAUDE.md
+# Codex 프로젝트라면:
+sed -i 's/- 프로젝트명: /- project-name: /' AGENTS.md
 ```
 
 또는 `/omo-project-add` 재실행 — AskUserQuestion으로 기존 라인을 새 키로 덮어쓰기.

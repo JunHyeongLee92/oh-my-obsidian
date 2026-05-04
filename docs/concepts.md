@@ -25,7 +25,7 @@ Multiple git projects connect to a **single Obsidian vault** used as a central k
 - **Purple focal points** — Skills (orchestration entry points) and `wiki/` (the knowledge hub). The two centers of the system.
 - **Solid lines** — active actions such as user commands and internal reads/writes.
 - **Dashed lines** — automated events (URL fetch, cron schedules, commit triggers, staleness warnings).
-- N projects share **one vault**. Each project keeps its own scratchpad under `projects/<name>/` (sibling to `wiki/`, not inside it), and the project's `CLAUDE.md` back-references the vault.
+- N projects share **one vault**. Each project keeps its own scratchpad under `projects/<name>/` (sibling to `wiki/`, not inside it), and the project's `CLAUDE.md` or `AGENTS.md` back-references the vault.
 
 See [CONTRIBUTING.md § Architecture](../CONTRIBUTING.md#architecture) for design principles.
 

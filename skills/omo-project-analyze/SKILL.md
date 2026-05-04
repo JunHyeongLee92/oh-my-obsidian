@@ -55,12 +55,13 @@ REPO_ROOT=$(git -C "$PWD" rev-parse --show-toplevel 2>/dev/null)
 
 ### 3. Resolve the project name
 
-If an argument is passed, use it. Otherwise prefer the `project-name:` line in `CLAUDE.md`; fall back to `basename "$REPO_ROOT"`.
+If an argument is passed, use it. Otherwise prefer the `project-name:` line in `CLAUDE.md` or `AGENTS.md`; fall back to `basename "$REPO_ROOT"`.
 
 ```bash
 PROJECT_NAME="${1:-}"
 if [ -z "$PROJECT_NAME" ]; then
-  PROJECT_NAME=$(grep -E '^- project-name:' "$REPO_ROOT/CLAUDE.md" 2>/dev/null | head -1 | sed 's/.*project-name: *//' | tr -d ' ')
+  PROJECT_NAME=$(grep -Eh '^[-*[:space:]]*project-name[[:space:]]*:' "$REPO_ROOT/CLAUDE.md" "$REPO_ROOT/AGENTS.md" 2>/dev/null \
+    | head -1 | sed -E 's#^[-*[:space:]]*project-name[[:space:]]*:[[:space:]]*##' | tr -d '` "')
   PROJECT_NAME="${PROJECT_NAME:-$(basename "$REPO_ROOT")}"
 fi
 ```
@@ -85,7 +86,7 @@ Collect the material the LLM will analyze:
 
 ```bash
 # Documents
-ls "$REPO_ROOT"/README* "$REPO_ROOT"/CLAUDE.md 2>/dev/null
+ls "$REPO_ROOT"/README* "$REPO_ROOT"/CLAUDE.md "$REPO_ROOT"/AGENTS.md 2>/dev/null
 
 # Build / dependency metadata
 ls "$REPO_ROOT"/package.json "$REPO_ROOT"/requirements*.txt \
@@ -138,7 +139,7 @@ Generated page content — both section headers and body prose — follows the *
 - Frontmatter keys (`type`, `project`, `doc`, `created`, `updated`, `status`, `source-commit`)
 - Enum values in frontmatter (`project-doc`, `active`, …) and `wiki/log.md` action column (`analyze`, `ingest`, etc.)
 - Wikilink targets, file slugs, technical identifiers (Claude Code commands, env var names)
-- The `project-name:` contract key in project `CLAUDE.md` (cross-machine contract — never translate)
+- The `project-name:` contract key in project `CLAUDE.md` or `AGENTS.md` (cross-machine contract — never translate)
 
 ### Step 3: Write architecture.md
 

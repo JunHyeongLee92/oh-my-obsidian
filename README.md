@@ -53,7 +53,7 @@ A vault you maintain alone just piles up and falls out of use. OMO lets Claude *
 | ---------------------------------------- | --------------------------------------------------------------------------------------------- |
 | Bookmark a URL, then forget it           | `/omo-ingest` → save source + auto-generate entity / concept / summary pages + cross-link     |
 | "I researched this before…" — can't find | `/omo-query` → answers from the vault; reusable answers auto-promoted into new pages          |
-| Re-research the same topic per project   | `/omo-project-add` → project `CLAUDE.md` points into the vault, warns on stale refs at commit |
+| Re-research the same topic per project   | `/omo-project-add` → project `CLAUDE.md` or `AGENTS.md` points into the vault, warns on stale refs at commit |
 | Notes pile up, structure collapses       | Schema + daily lint keeps the vault navigable six months later                                |
 | Starting each new topic from scratch     | `/omo-study` → vault-grounded step-by-step walkthrough with MCQ checks                        |
 

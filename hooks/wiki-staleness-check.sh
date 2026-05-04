@@ -3,7 +3,7 @@
 # PostToolUse(Bash) hook: warn when a project's linked wiki page is stale.
 #
 # Fires on `git commit` in a project repo that declares `project-name: <name>`
-# in its CLAUDE.md. Resolves the wiki path via OMO config
+# in its project instruction file (CLAUDE.md or AGENTS.md). Resolves the wiki path via OMO config
 # (~/.config/oh-my-obsidian/config.json → vaultPath), then checks whether
 # <vault>/projects/<name>/index.md's `updated:` frontmatter is older
 # than recent feat/fix/refactor commits in the source repo.
@@ -61,15 +61,21 @@ esac
 # Resolve repo root; bail if not a git repo.
 REPO_ROOT=$(git -C "$CWD" rev-parse --show-toplevel 2>/dev/null) || exit 0
 
-PROJECT_CLAUDE_MD="$REPO_ROOT/CLAUDE.md"
-[ -f "$PROJECT_CLAUDE_MD" ] || exit 0
+PROJECT_INSTRUCTIONS=""
+for candidate in "$REPO_ROOT/CLAUDE.md" "$REPO_ROOT/AGENTS.md"; do
+  if [ -f "$candidate" ] && grep -qE "^[-*[:space:]]*project-name[[:space:]]*:" "$candidate" 2>/dev/null; then
+    PROJECT_INSTRUCTIONS="$candidate"
+    break
+  fi
+done
+[ -n "$PROJECT_INSTRUCTIONS" ] || exit 0
 
-# Extract `project-name: <name>` from project CLAUDE.md.
+# Extract `project-name: <name>` from the project instruction file.
 # Line shape examples:
 #   project-name: nl2sql
 #   - project-name: nl2sql
 #   * project-name: `nl2sql`
-PROJECT_NAME=$(grep -E "^[-*[:space:]]*project-name[[:space:]]*:" "$PROJECT_CLAUDE_MD" 2>/dev/null \
+PROJECT_NAME=$(grep -E "^[-*[:space:]]*project-name[[:space:]]*:" "$PROJECT_INSTRUCTIONS" 2>/dev/null \
   | head -1 \
   | sed -E 's#^[-*[:space:]]*project-name[[:space:]]*:[[:space:]]*##' \
   | sed -E 's#^[`"'"'"']+##; s#[`"'"'"']+$##' \
@@ -85,7 +91,7 @@ WIKI_INDEX="$WIKI_DIR/index.md"
 if [ ! -f "$WIKI_INDEX" ]; then
   {
     echo "[wiki-check] ⚠️ wiki page missing: $WIKI_INDEX"
-    echo "- project CLAUDE.md declares 'project-name: $PROJECT_NAME' but no matching page exists in the vault"
+    echo "- $(basename "$PROJECT_INSTRUCTIONS") declares 'project-name: $PROJECT_NAME' but no matching page exists in the vault"
     echo "- Fix: run /omo-project-add to create the project page in the vault."
   } >&2
   exit 2

@@ -9,7 +9,7 @@
       "version": "0.0.3",
       "source": {
         "source": "local",
-        "path": "."
+        "path": "./oh-my-obsidian"
       },
       "policy": {
         "installation": "AVAILABLE",

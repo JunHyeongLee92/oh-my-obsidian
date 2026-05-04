@@ -14,6 +14,7 @@ node_modules/
 # Local test artifacts
 /tmp/
 *.log
+.agents/plugins/oh-my-obsidian
 
 # Claude Code session artifacts if any end up here
 .claude/sessions/
