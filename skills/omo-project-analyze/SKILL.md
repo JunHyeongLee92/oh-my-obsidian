@@ -18,6 +18,10 @@ Analyze the current git project from an LLM's perspective and write static under
 - `worklog/` — time axis
 - `decisions/` — decisions (ADRs)
 
+## Harness compatibility
+
+When running in Codex and `AskUserQuestion` is unavailable, use the harness' normal user-input flow if available. If no choice UI exists, ask one concise plain-text confirmation before overwriting or merging existing docs.
+
 ## When to activate
 
 - `/omo-project-analyze` or `/omo-project-analyze <name>`

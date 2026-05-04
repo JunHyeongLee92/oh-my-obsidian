@@ -14,6 +14,10 @@ A **one-shot response** to the staleness-hook warning. Reads commits accumulated
 - Every write is gated behind an **AskUserQuestion** approval (no destructive actions)
 - `decisions/` is proposed **only when it's naturally warranted** (no forced ADRs)
 
+## Harness compatibility
+
+When running in Codex and `AskUserQuestion` is unavailable, use the harness' normal user-input flow if available. If no choice UI exists, ask one concise plain-text confirmation before each write group.
+
 ## When to activate
 
 - `/omo-project-update` or `/omo-project-update <name>`

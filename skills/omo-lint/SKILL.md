@@ -9,6 +9,10 @@ allowed-tools: Bash, Read, Edit, Write, AskUserQuestion
 
 Check the vault for schema / link / frontmatter consistency. When CRITICAL issues exist, **present the fix plan first and only apply it after explicit user confirmation** — touching existing files must stay visible to the user.
 
+## Harness compatibility
+
+When running in Codex and `AskUserQuestion` is unavailable, use the harness' normal user-input flow if available. If no choice UI exists, ask one concise plain-text confirmation before modifying existing files.
+
 ## When to activate
 
 - `/omo-lint`

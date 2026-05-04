@@ -4,6 +4,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-plugin-7132f5?style=flat-square)](https://claude.com/claude-code)
+[![Codex](https://img.shields.io/badge/Codex-plugin-111111?style=flat-square)](https://openai.com/codex)
 [![Node.js](https://img.shields.io/badge/Node.js-20%2B-339933?style=flat-square&logo=node.js&logoColor=white)](https://nodejs.org)
 [![Issues](https://img.shields.io/github/issues/JunHyeongLee92/oh-my-obsidian?style=flat-square)](https://github.com/JunHyeongLee92/oh-my-obsidian/issues)
 
@@ -18,7 +19,7 @@ Three layers: immutable raw sources, an LLM-curated wiki, and a schema that defi
 > An LLM wiki flips that: the LLM itself maintains a persistent, structured, cross-linked knowledge base.  
 > New sources get filed, summarized, and linked; reusable answers get promoted into new pages. The knowledge base **compounds** over time instead of being rediscovered on every turn.
 
-A Claude Code plugin. Claude runs as an autonomous curator for your vault — without prompts, it will:
+A Claude Code and Codex plugin. The agent runs as an autonomous curator for your vault — without prompts, it will:
 
 - store URLs and cross-link them with auto-generated summary / entity / concept pages
 - answer questions against the vault, promoting reusable answers into new pages
@@ -58,7 +59,9 @@ A vault you maintain alone just piles up and falls out of use. OMO lets Claude *
 
 ## Install
 
-**Linux / macOS** (Windows via WSL2). Requires Claude Code + Node.js 20+.
+**Linux / macOS** (Windows via WSL2). Requires Claude Code or Codex + Node.js 20+.
+
+Claude Code:
 
 ```bash
 /plugin marketplace add https://github.com/JunHyeongLee92/oh-my-obsidian
@@ -66,6 +69,18 @@ A vault you maintain alone just piles up and falls out of use. OMO lets Claude *
 /reload-plugins
 /omo-init ~/my-vault
 ```
+
+Codex local development:
+
+```bash
+git clone https://github.com/JunHyeongLee92/oh-my-obsidian
+cd oh-my-obsidian
+codex plugin marketplace add "$PWD"
+export OMO_PLUGIN_ROOT="$PWD"
+# Then run Codex and ask: /omo-init ~/my-vault
+```
+
+For Codex-driven cron digests, set `OMO_DIGEST_AGENT=codex`. Claude Code hooks remain Claude-specific and are not registered through the Codex manifest.
 
 ## Try it
 
@@ -101,7 +116,7 @@ Natural language works too: "add this URL to the wiki https://...".
 
 ## Acknowledgments
 
-[Claude Code](https://claude.com/claude-code) · [Obsidian](https://obsidian.md) · [Playwright](https://playwright.dev) · [Defuddle](https://github.com/kepano/defuddle)
+[Claude Code](https://claude.com/claude-code) · [Codex](https://openai.com/codex) · [Obsidian](https://obsidian.md) · [Playwright](https://playwright.dev) · [Defuddle](https://github.com/kepano/defuddle)
 
 ## License
 

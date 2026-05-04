@@ -4,6 +4,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-plugin-7132f5?style=flat-square)](https://claude.com/claude-code)
+[![Codex](https://img.shields.io/badge/Codex-plugin-111111?style=flat-square)](https://openai.com/codex)
 [![Node.js](https://img.shields.io/badge/Node.js-20%2B-339933?style=flat-square&logo=node.js&logoColor=white)](https://nodejs.org)
 [![Issues](https://img.shields.io/github/issues/JunHyeongLee92/oh-my-obsidian?style=flat-square)](https://github.com/JunHyeongLee92/oh-my-obsidian/issues)
 
@@ -18,7 +19,7 @@
 > LLM wiki는 이를 뒤집는다: LLM이 구조화되고 상호 링크된 지식 베이스를 직접 유지한다.  
 > 새 원본은 분류·요약·링크되고, 재사용 가능한 답은 새 페이지로 승격된다. 지식이 매 턴 재발견되는 게 아니라 시간이 지날수록 **복리로 쌓인다**.
 
-Claude Code 플러그인. Claude가 볼트의 자율 큐레이터로 상주하며, 별도 프롬프트 없이:
+Claude Code와 Codex 플러그인. 에이전트가 볼트의 자율 큐레이터로 상주하며, 별도 프롬프트 없이:
 
 - URL을 저장하고 원본·요약·엔티티·개념 페이지로 교차 링크
 - 볼트에 질문하면 답하고, 재사용 가치 있으면 새 페이지로 승격
@@ -58,7 +59,9 @@ OMO는 **답을 위키 페이지로 고정**시켜 같은 발견을 반복하지
 
 ## Install
 
-**Linux / macOS** (Windows는 WSL2). Claude Code + Node.js 20+ 필요.
+**Linux / macOS** (Windows는 WSL2). Claude Code 또는 Codex + Node.js 20+ 필요.
+
+Claude Code:
 
 ```bash
 /plugin marketplace add https://github.com/JunHyeongLee92/oh-my-obsidian
@@ -66,6 +69,18 @@ OMO는 **답을 위키 페이지로 고정**시켜 같은 발견을 반복하지
 /reload-plugins
 /omo-init ~/my-vault
 ```
+
+Codex 로컬 개발:
+
+```bash
+git clone https://github.com/JunHyeongLee92/oh-my-obsidian
+cd oh-my-obsidian
+codex plugin marketplace add "$PWD"
+export OMO_PLUGIN_ROOT="$PWD"
+# 이후 Codex에서 요청: /omo-init ~/my-vault
+```
+
+Codex로 cron digest를 돌릴 때는 `OMO_DIGEST_AGENT=codex`를 설정한다. Claude Code 훅은 Claude 전용 표면이라 Codex manifest에는 등록하지 않는다.
 
 ## Try it
 
@@ -101,7 +116,7 @@ OMO는 **답을 위키 페이지로 고정**시켜 같은 발견을 반복하지
 
 ## Acknowledgments
 
-[Claude Code](https://claude.com/claude-code) · [Obsidian](https://obsidian.md) · [Playwright](https://playwright.dev) · [Defuddle](https://github.com/kepano/defuddle)
+[Claude Code](https://claude.com/claude-code) · [Codex](https://openai.com/codex) · [Obsidian](https://obsidian.md) · [Playwright](https://playwright.dev) · [Defuddle](https://github.com/kepano/defuddle)
 
 ## License
 

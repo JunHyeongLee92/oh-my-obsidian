@@ -9,6 +9,10 @@ allowed-tools: Bash, Read, AskUserQuestion
 
 Removes OMO's infrastructure (cron + optional config) while preserving the user's vault data intact.
 
+## Harness compatibility
+
+When running in Codex and `AskUserQuestion` is unavailable, use the harness' normal user-input flow if available. If no choice UI exists, ask one concise plain-text confirmation before removing cron entries or config.
+
 ## When to activate
 
 - `/omo-uninstall`

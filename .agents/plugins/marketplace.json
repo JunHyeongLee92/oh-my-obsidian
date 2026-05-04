@@ -1,0 +1,21 @@
+{
+  "name": "oh-my-obsidian-local",
+  "interface": {
+    "displayName": "oh-my-obsidian Local"
+  },
+  "plugins": [
+    {
+      "name": "oh-my-obsidian",
+      "version": "0.0.3",
+      "source": {
+        "source": "local",
+        "path": "."
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

@@ -9,6 +9,10 @@ allowed-tools: Bash, Read, AskUserQuestion
 
 Take a URL or a topic, analyze it, and teach it step-by-step by anchoring every example in the user's existing projects and knowledge. Every decision point uses a **choice UI**.
 
+## Harness compatibility
+
+When running in Codex and `AskUserQuestion` is unavailable, use the harness' normal user-input flow if available. If no choice UI exists, ask concise plain-text questions for study mode, checkpoints, step transitions, and wrap-up.
+
 ## When to activate
 
 - `/omo-study <URL>` — learn this page's contents

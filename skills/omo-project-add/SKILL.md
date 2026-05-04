@@ -13,6 +13,10 @@ Register the current git project with the oh-my-obsidian vault. Writes a single 
 
 **Why this key is literal**: `hooks/wiki-staleness-check.sh` detects the project by grepping for the literal string `project-name:`. Do **not** customize this key on individual machines — it is a cross-machine contract shared by the hook and the skill, so every clone of the same project must use the identical line.
 
+## Harness compatibility
+
+When running in Codex and `AskUserQuestion` is unavailable, use the harness' normal user-input flow if available. If no choice UI exists, ask one concise plain-text question only when the decision is required; otherwise make the conservative default choice documented in this skill.
+
 ## When to activate
 
 - `/omo-project-add` or `/omo-project-add <name>`

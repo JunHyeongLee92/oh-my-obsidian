@@ -9,6 +9,10 @@ allowed-tools: Bash, Read, Write, Edit, AskUserQuestion
 
 One-time setup for an Obsidian vault to be used as an LLM wiki.
 
+## Harness compatibility
+
+When running in Codex and `AskUserQuestion` is unavailable, use the harness' normal user-input flow if available. If no choice UI exists, ask one concise plain-text question only when the decision is required; otherwise make the conservative default choice documented in this skill.
+
 ## When to activate
 
 - User invokes `/omo-init [<path>]`
@@ -42,9 +46,24 @@ Normalize the chosen path to an absolute path (`~` → `$HOME`). If the parent d
 ### 1. Resolve plugin root
 
 ```bash
-PLUGIN_ROOT="$HOME/.claude/plugins/marketplaces/oh-my-obsidian"
+PLUGIN_ROOT="${OMO_PLUGIN_ROOT:-}"
+
+if [ -z "$PLUGIN_ROOT" ] && [ -f "$HOME/.codex/config.toml" ]; then
+  PLUGIN_ROOT=$(node -e "
+    const fs = require('fs');
+    const text = fs.readFileSync(process.env.HOME + '/.codex/config.toml', 'utf8');
+    const match = text.match(/\\[marketplaces\\.oh-my-obsidian-local\\][\\s\\S]*?\\nsource\\s*=\\s*\"([^\"]+)\"/);
+    process.stdout.write(match ? match[1] : '');
+  ")
+fi
+
+if [ -z "$PLUGIN_ROOT" ]; then
+  PLUGIN_ROOT="$HOME/.claude/plugins/marketplaces/oh-my-obsidian"
+fi
+
 test -d "$PLUGIN_ROOT/scripts" && test -d "$PLUGIN_ROOT/templates" || {
   echo "Could not locate the plugin at: $PLUGIN_ROOT"
+  echo "Set OMO_PLUGIN_ROOT=/path/to/oh-my-obsidian and retry."
   exit 1
 }
 ```

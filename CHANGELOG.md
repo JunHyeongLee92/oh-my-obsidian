@@ -6,6 +6,18 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 ## [Unreleased]
 
+### Added
+
+- Codex plugin surface via `.codex-plugin/plugin.json` and a repo-local `.agents/plugins/marketplace.json`.
+- Codex local-development instructions in README files and `.codex-plugin/README.md`.
+- Harness-compatibility notes for interactive skills when Codex does not expose Claude Code's `AskUserQuestion` tool.
+
+### Changed
+
+- `scripts/weekly-digest.sh` can now run through either Claude Code (`OMO_DIGEST_AGENT=claude`, default) or Codex (`OMO_DIGEST_AGENT=codex`).
+- `scripts/lib/config.sh` now falls back to the current plugin checkout (or `OMO_PLUGIN_ROOT`) when `pluginRoot` is omitted from config.
+- `omo-init` now resolves a local Codex marketplace checkout before falling back to Claude Code marketplace paths.
+
 ## [0.0.3] - 2026-04-24
 
 ### Fixed

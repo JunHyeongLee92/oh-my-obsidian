@@ -1,0 +1,38 @@
+{
+  "name": "oh-my-obsidian",
+  "version": "0.0.3",
+  "description": "Turn any Obsidian vault into an LLM-maintained wiki. Ingest URLs, auto-structure notes by schema, run weekly digests, and keep cross-project records in one data hub.",
+  "author": {
+    "name": "junehyeong.lee",
+    "url": "https://github.com/JunHyeongLee92"
+  },
+  "homepage": "https://github.com/JunHyeongLee92/oh-my-obsidian",
+  "repository": "https://github.com/JunHyeongLee92/oh-my-obsidian",
+  "license": "MIT",
+  "keywords": [
+    "obsidian",
+    "wiki",
+    "llm-wiki",
+    "harness-engineering",
+    "knowledge-base",
+    "ingest",
+    "codex",
+    "claude-code"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "oh-my-obsidian",
+    "shortDescription": "Turn an Obsidian vault into an LLM-maintained wiki.",
+    "longDescription": "oh-my-obsidian is a harness-engineering plugin that keeps an Obsidian vault useful over time. It ingests URLs into immutable sources, structures summaries, entities, concepts, and project notes by schema, searches the accumulated wiki, and can run scheduled re-synthesis digests.",
+    "developerName": "junehyeong.lee",
+    "category": "Productivity",
+    "capabilities": ["Read", "Write"],
+    "websiteURL": "https://github.com/JunHyeongLee92/oh-my-obsidian",
+    "defaultPrompt": [
+      "Initialize this Obsidian vault with omo-init.",
+      "Ingest this URL into my Obsidian wiki.",
+      "Search my vault and promote reusable knowledge."
+    ],
+    "brandColor": "#6C5CE7"
+  }
+}

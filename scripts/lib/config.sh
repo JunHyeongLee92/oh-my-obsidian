@@ -13,6 +13,9 @@
 #   VAULT_ROOT=$(omo_get_vault_path)
 
 OMO_CONFIG_PATH="${OMO_CONFIG_PATH:-$HOME/.config/oh-my-obsidian/config.json}"
+OMO_LIB_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+OMO_PLUGIN_ROOT_FALLBACK="${OMO_PLUGIN_ROOT:-$(cd "$OMO_LIB_DIR/../.." && pwd)}"
+export OMO_PLUGIN_ROOT_FALLBACK
 
 omo_require_node() {
   if ! command -v node >/dev/null 2>&1; then
@@ -48,7 +51,9 @@ omo_get_plugin_root() {
     const fs = require('fs');
     const path = require('path');
     const cfg = JSON.parse(fs.readFileSync('$OMO_CONFIG_PATH', 'utf8'));
-    const fallback = path.join(process.env.HOME, '.claude/plugins/marketplaces/oh-my-obsidian');
+    const fallback = process.env.OMO_PLUGIN_ROOT_FALLBACK
+      || process.env.OMO_PLUGIN_ROOT
+      || path.join(process.env.HOME, '.claude/plugins/marketplaces/oh-my-obsidian');
     process.stdout.write(cfg.pluginRoot || fallback);
   "
 }
