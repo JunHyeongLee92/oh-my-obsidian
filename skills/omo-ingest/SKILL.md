@@ -54,9 +54,13 @@ Writing pages without loading the schema will trigger CRITICAL lint issues.
 bash "$PLUGIN/scripts/clip.sh" "<URL>" "<category>" [<filename>]
 ```
 
+clip.sh dispatches on the URL:
+- **Web articles** → Playwright (headless browser) + Defuddle.
+- **YouTube videos** (`youtube.com/*`, `youtu.be/*`, `m.youtube.com/*`) → automatically routed to yt-dlp subtitle extraction (manual subs preferred, auto-caption fallback). The transcript is rolling-window deduplicated and written to `_sources/<category>/<slug>.md` with the standard frontmatter shape. ==Pick `misc` as the category== for YouTube — the transcript isn't an article/paper/conversation. Subtitle language preference is `ko,en` by default; override via `OMO_YT_SUB_LANG=<lang1>,<lang2>,...` env var (e.g. `OMO_YT_SUB_LANG=en,ja`).
+
 clip.sh has three possible outcomes — branch on the exit code:
 
-#### Exit 0 — standard path (Defuddle succeeded)
+#### Exit 0 — standard path (Defuddle succeeded, or YouTube transcript extracted)
 
 Output: `$VAULT/_sources/<category>/<filename>.md` (immutable — never modify afterwards). Continue to step 4.
 
@@ -100,7 +104,9 @@ When you see exit 2:
 
 #### Exit 1 — hard error
 
-Playwright failed, npm/node missing, network/timeout, or another unrecoverable issue. **Do not** attempt the LLM fallback (no preserved HTML). Surface the error to the user and stop.
+Playwright/yt-dlp failed, npm/node missing, network/timeout, no usable subtitle (YouTube), or another unrecoverable issue. **Do not** attempt the LLM fallback (no preserved HTML). Surface the error to the user and stop.
+
+For YouTube specifically, exit 1 with `no usable subtitle in langs:` typically means the video has no manual subs and no auto-captions in the requested languages. Suggest the user either re-run with a different `OMO_YT_SUB_LANG` (`yt-dlp --list-subs <URL>` shows what's available) or, if the video really has no captions, paste a manual summary in chat for ingest.
 
 ### 4. Read the extracted source
 

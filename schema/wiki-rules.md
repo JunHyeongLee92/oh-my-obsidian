@@ -50,7 +50,7 @@ This document is the master rulebook an LLM follows when operating this vault.
 
 ### 1. Ingest (collecting a source)
 
-1. Extract the original with the plugin's `scripts/clip.sh <URL> [category]` and save it under `_sources/{category}/`. Defuddle-based (no AI processing) on the happy path; if Defuddle cannot identify the article body, clip.sh exits 2 with the rendered Playwright HTML preserved and the calling skill performs LLM extraction from that HTML — never from a fresh fetch, so the rendered DOM is never thrown away.
+1. Extract the original with the plugin's `scripts/clip.sh <URL> [category]` and save it under `_sources/{category}/`. clip.sh dispatches on URL: web articles take the Playwright + Defuddle path (no AI processing); YouTube URLs (`youtube.com`/`youtu.be`/`m.youtube.com`) take the yt-dlp subtitle path (manual sub preferred, auto-caption fallback) with `OMO_YT_SUB_LANG` env override (default `ko,en`). If Defuddle cannot identify the article body on the web path, clip.sh exits 2 with the rendered Playwright HTML preserved and the calling skill performs LLM extraction from that HTML — never from a fresh fetch, so the rendered DOM is never thrown away. The YouTube path uses only exit 0/1 (no LLM fallback applies — the spoken content lives in audio, not HTML).
 2. Read the stored source and extract the core entities, concepts, and procedures.
 3. Create or update wiki pages based on what was extracted:
    - **Entities** (tools, people, services, …) → `wiki/entities/`

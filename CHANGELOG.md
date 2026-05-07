@@ -6,6 +6,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 ## [Unreleased]
 
+## [0.0.5] - 2026-05-07
+
+### Added
+
+- YouTube ingest path. `scripts/clip.sh` now detects `youtube.com` / `youtu.be` / `m.youtube.com` URLs and dispatches to the new `scripts/lib/youtube-clip.sh` module, which uses yt-dlp to download manual subs (preferred) or auto-captions, strips VTT rolling-window duplication, and writes a normal `_sources/<category>/<slug>.md` with the standard frontmatter shape. Subtitle language preference is configurable via `OMO_YT_SUB_LANG` (default `ko,en`). The exit-code contract is unchanged for callers; YouTube uses only exit 0 (success) and 1 (hard error) because there is no Defuddle-style fallback when the spoken content lives in audio rather than HTML. Requires yt-dlp on `PATH` or at `~/.local/bin/yt-dlp` — install via `mkdir -p ~/.local/bin && curl -L -o ~/.local/bin/yt-dlp https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp && chmod +x ~/.local/bin/yt-dlp`.
+- `omo-ingest` SKILL describes the YouTube branch alongside the existing web/Defuddle path and recommends `misc` as the category for video transcripts.
+
 ## [0.0.4] - 2026-05-07
 
 ### Added

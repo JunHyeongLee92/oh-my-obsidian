@@ -2,13 +2,18 @@
 set -euo pipefail
 
 # clip.sh — extract the original content from a URL and save it under <vault>/_sources/
-# Render with Playwright (headless browser) → convert to markdown with Defuddle (no AI processing).
 #
-# Exit codes:
+# Two ingest paths, dispatched on URL:
+#   • Web articles: Playwright (headless browser) → Defuddle (no AI processing).
+#   • YouTube videos: yt-dlp subtitle extraction → VTT-to-text cleanup
+#     (see lib/youtube-clip.sh). Manual subs preferred, auto-caption fallback.
+#
+# Exit codes (uniform across both paths):
 #   0  success — _sources/<category>/<filename>.md written
-#   1  hard error — Playwright failed, missing tools, or other unrecoverable issue
+#   1  hard error — Playwright/yt-dlp failed, missing tools, no usable subtitle,
+#      or other unrecoverable issue
 #   2  Defuddle could not extract content but Playwright HTML is preserved.
-#      Stdout includes FALLBACK_HTML=<path>, FALLBACK_URL=<url>,
+#      Web path only. Stdout includes FALLBACK_HTML=<path>, FALLBACK_URL=<url>,
 #      FALLBACK_CATEGORY=<cat>, and optionally FALLBACK_FILENAME=<name>.
 #      The calling skill is expected to perform LLM-based extraction from
 #      the preserved HTML and write _sources/ itself.
@@ -34,6 +39,16 @@ TMP_JS="/tmp/clip-$$-pw.mjs"
 
 SOURCES_DIR="$VAULT_ROOT/_sources/$CATEGORY"
 mkdir -p "$SOURCES_DIR"
+
+# YouTube dispatch: if the URL is a YouTube link, hand off to the yt-dlp path
+# in lib/youtube-clip.sh. Returns the same exit-code shape, so callers don't
+# need to know the difference.
+# shellcheck source=lib/youtube-clip.sh
+source "$SCRIPT_DIR/lib/youtube-clip.sh"
+if omo_is_youtube_url "$URL"; then
+  omo_clip_youtube "$URL" "$VAULT_ROOT" "$CATEGORY" "$FILENAME"
+  exit $?
+fi
 
 echo "Extracting: $URL"
 
