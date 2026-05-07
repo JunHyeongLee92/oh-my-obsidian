@@ -54,7 +54,53 @@ Writing pages without loading the schema will trigger CRITICAL lint issues.
 bash "$PLUGIN/scripts/clip.sh" "<URL>" "<category>" [<filename>]
 ```
 
-Output: `$VAULT/_sources/<category>/<filename>.md` (immutable — never modify afterwards).
+clip.sh has three possible outcomes — branch on the exit code:
+
+#### Exit 0 — standard path (Defuddle succeeded)
+
+Output: `$VAULT/_sources/<category>/<filename>.md` (immutable — never modify afterwards). Continue to step 4.
+
+#### Exit 2 — LLM fallback (Defuddle could not extract, Playwright HTML preserved)
+
+Common on JS-heavy marketing pages with weak semantic markup. clip.sh emits these lines on stdout:
+
+```
+FALLBACK_HTML=/tmp/clip-<pid>-<ts>.html
+FALLBACK_URL=<original URL>
+FALLBACK_CATEGORY=<articles|papers|conversations|misc>
+FALLBACK_FILENAME=<name>          # only if user provided one
+```
+
+When you see exit 2:
+
+1. **Read** the HTML file at `FALLBACK_HTML` (it is the rendered DOM, not the raw network response).
+2. **Extract** from it:
+   - `title` — page title or main `<h1>`
+   - `author` — byline if any, else empty string
+   - `published` — publish date as `YYYY-MM-DD` if available, else empty string
+   - `body` — clean markdown of the article body. Preserve headings, lists, code blocks, quotes. Drop nav, footer, sidebar, cookie banners, and other boilerplate.
+3. **Pick a slug**: use `FALLBACK_FILENAME` if provided; otherwise generate kebab-case from the title (lowercase, non-alnum→`-`, collapse repeats, max ~80 chars).
+4. **Write** `$VAULT/_sources/$FALLBACK_CATEGORY/<slug>.md` using the same frontmatter shape clip.sh uses on the happy path:
+   ```yaml
+   ---
+   title: "<title>"
+   source-type: <FALLBACK_CATEGORY>
+   source-url: "<FALLBACK_URL>"
+   author: "<author or empty>"
+   domain: "<host extracted from URL>"
+   published: "<YYYY-MM-DD or empty>"
+   ingested-date: <today YYYY-MM-DD>
+   ---
+
+   <body markdown>
+   ```
+5. **Delete** the `FALLBACK_HTML` file (`rm -f "$FALLBACK_HTML"`).
+6. **Mention the fallback** in the final report so the user knows LLM extraction was used (less faithful than Defuddle's deterministic conversion).
+7. Continue to step 4.
+
+#### Exit 1 — hard error
+
+Playwright failed, npm/node missing, network/timeout, or another unrecoverable issue. **Do not** attempt the LLM fallback (no preserved HTML). Surface the error to the user and stop.
 
 ### 4. Read the extracted source
 

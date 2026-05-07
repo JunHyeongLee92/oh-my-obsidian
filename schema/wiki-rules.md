@@ -1,7 +1,7 @@
 ---
 type: schema
 created: 2026-04-06
-updated: 2026-04-20
+updated: 2026-05-07
 ---
 
 # Wiki Rules
@@ -50,7 +50,7 @@ This document is the master rulebook an LLM follows when operating this vault.
 
 ### 1. Ingest (collecting a source)
 
-1. Extract the original with the plugin's `scripts/clip.sh <URL> [category]` and save it under `_sources/{category}/` (Defuddle-based, no AI processing).
+1. Extract the original with the plugin's `scripts/clip.sh <URL> [category]` and save it under `_sources/{category}/`. Defuddle-based (no AI processing) on the happy path; if Defuddle cannot identify the article body, clip.sh exits 2 with the rendered Playwright HTML preserved and the calling skill performs LLM extraction from that HTML — never from a fresh fetch, so the rendered DOM is never thrown away.
 2. Read the stored source and extract the core entities, concepts, and procedures.
 3. Create or update wiki pages based on what was extracted:
    - **Entities** (tools, people, services, …) → `wiki/entities/`
