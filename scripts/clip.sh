@@ -45,6 +45,23 @@ TMP_JS="/tmp/clip-$$-pw.mjs"
 SOURCES_DIR="$VAULT_ROOT/_sources/$CATEGORY"
 mkdir -p "$SOURCES_DIR"
 
+# Sanity: if the input looks like a local path (leading /, ./, ../, or ~/)
+# but the file doesn't exist, fail fast with a clear message. Otherwise
+# Playwright would treat the missing path as a URL and produce a confusing
+# "Cannot navigate to invalid URL" error.
+if [[ "$URL" =~ ^/ ]] || [[ "$URL" =~ ^\./ ]] || [[ "$URL" =~ ^\.\./ ]] || [[ "$URL" =~ ^~/ ]]; then
+  RESOLVED_PATH="${URL/#\~/$HOME}"
+  if [ ! -e "$RESOLVED_PATH" ]; then
+    echo "ERROR: local path does not exist: $URL" >&2
+    echo "  Check for typos. clip.sh expects a URL or an existing file path." >&2
+    exit 1
+  fi
+  if [ -d "$RESOLVED_PATH" ]; then
+    echo "ERROR: path is a directory, not a file: $URL" >&2
+    exit 1
+  fi
+fi
+
 # PDF dispatch: local PDF file or remote PDF URL → pdftotext path in
 # lib/pdf-clip.sh. Checked first because the PDF path also accepts plain
 # local file paths (not just URLs), which the other paths can't handle.

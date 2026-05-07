@@ -6,6 +6,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 ## [Unreleased]
 
+## [0.0.7] - 2026-05-07
+
+### Fixed
+
+- PDF placeholder title detection in `scripts/lib/pdf-clip.sh`. When `pdfinfo` returns a generic Office placeholder (`PowerPoint 프레젠테이션`, `PowerPoint Presentation`, `Microsoft Word|PowerPoint|Excel - <name>`, `Untitled`, `Untitled Document/Spreadsheet/Presentation`, `Slide 1`), the title fallback now treats it as if the field were empty and uses the original basename instead. Previously, a PowerPoint-exported PDF would land with `title: "PowerPoint 프레젠테이션"` and slug `powerpoint.md`, causing collisions and meaningless filenames.
+- Fast-fail in `scripts/clip.sh` for inputs that look like a local path (leading `/`, `./`, `../`, `~/`) but the file does not exist or is a directory. Previously these would fall through to the Playwright path, which produced a confusing `Cannot navigate to invalid URL` runtime error. Now exit 1 with `local path does not exist: ...` or `path is a directory, not a file: ...` before any dispatcher runs.
+
 ## [0.0.6] - 2026-05-07
 
 ### Added

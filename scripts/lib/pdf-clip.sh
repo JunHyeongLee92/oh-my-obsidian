@@ -129,11 +129,18 @@ omo_clip_pdf() {
     fi
   fi
 
-  # Fallback title: original basename (URL path basename or local filename),
-  # never the synthetic /tmp download path.
-  if [ -z "$title" ]; then
-    title="$original_basename"
-  fi
+  # Fallback title. pdfinfo's Title is often a useless placeholder when the
+  # PDF was exported from Office tooling that didn't fill in real metadata
+  # (e.g. saving a deck with no title set). Treat those placeholders as if
+  # the field were empty and fall back to original_basename instead.
+  case "$title" in
+    "" | "Untitled" | "Untitled Document" | "Untitled Spreadsheet" | "Untitled Presentation" | \
+    "PowerPoint 프레젠테이션" | "PowerPoint Presentation" | \
+    "Microsoft Word - "* | "Microsoft PowerPoint - "* | "Microsoft Excel - "* | \
+    "Slide 1")
+      title="$original_basename"
+      ;;
+  esac
 
   # 2. Extract text via pdftotext
   local pdf_layout="${OMO_PDF_LAYOUT:-true}"
