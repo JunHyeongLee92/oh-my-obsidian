@@ -6,6 +6,14 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 ## [Unreleased]
 
+## [0.0.6] - 2026-05-07
+
+### Added
+
+- PDF ingest path. `scripts/clip.sh` now detects PDF inputs (local file with `%PDF` magic bytes, or `https://...pdf` URL) and dispatches to the new `scripts/lib/pdf-clip.sh` module, which uses `pdftotext` (poppler-utils) for body extraction and `pdfinfo` for metadata (title, author, CreationDate, page count). Local PDFs are read in place; remote PDFs are downloaded to `/tmp` first and cleaned up after extraction. Layout mode is configurable via `OMO_PDF_LAYOUT=true|false` (default `true` preserves columns/tables). Scanned/image-only PDFs return exit 1 with an OCR hint.
+- `scripts/clip.sh` first argument now accepts a **local file path** in addition to a URL. The previous URL-only contract is preserved for callers; this is a strict superset.
+- `omo-ingest` SKILL describes the PDF branch alongside the YouTube and web/Defuddle paths and recommends `papers` for academic PDFs and `articles` for reports/whitepapers.
+
 ## [0.0.5] - 2026-05-07
 
 ### Added

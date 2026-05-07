@@ -1,17 +1,22 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# clip.sh — extract the original content from a URL and save it under <vault>/_sources/
+# clip.sh — extract the original content from a URL or local file and save it
+# under <vault>/_sources/.
 #
-# Two ingest paths, dispatched on URL:
-#   • Web articles: Playwright (headless browser) → Defuddle (no AI processing).
-#   • YouTube videos: yt-dlp subtitle extraction → VTT-to-text cleanup
-#     (see lib/youtube-clip.sh). Manual subs preferred, auto-caption fallback.
+# Three ingest paths, dispatched on input:
+#   • PDFs: local path or https URL ending in .pdf → pdftotext (poppler).
+#     See lib/pdf-clip.sh.
+#   • YouTube videos: youtube.com / youtu.be / m.youtube.com → yt-dlp subtitle
+#     extraction → VTT-to-text cleanup. See lib/youtube-clip.sh.
+#   • Web articles (default): Playwright (headless browser) → Defuddle
+#     (no AI processing).
 #
-# Exit codes (uniform across both paths):
+# Exit codes (uniform across all paths):
 #   0  success — _sources/<category>/<filename>.md written
-#   1  hard error — Playwright/yt-dlp failed, missing tools, no usable subtitle,
-#      or other unrecoverable issue
+#   1  hard error — tool missing (pdftotext, yt-dlp, Playwright), download
+#      failed, no usable subtitle, scanned/image-only PDF, or other
+#      unrecoverable issue.
 #   2  Defuddle could not extract content but Playwright HTML is preserved.
 #      Web path only. Stdout includes FALLBACK_HTML=<path>, FALLBACK_URL=<url>,
 #      FALLBACK_CATEGORY=<cat>, and optionally FALLBACK_FILENAME=<name>.
@@ -39,6 +44,16 @@ TMP_JS="/tmp/clip-$$-pw.mjs"
 
 SOURCES_DIR="$VAULT_ROOT/_sources/$CATEGORY"
 mkdir -p "$SOURCES_DIR"
+
+# PDF dispatch: local PDF file or remote PDF URL → pdftotext path in
+# lib/pdf-clip.sh. Checked first because the PDF path also accepts plain
+# local file paths (not just URLs), which the other paths can't handle.
+# shellcheck source=lib/pdf-clip.sh
+source "$SCRIPT_DIR/lib/pdf-clip.sh"
+if omo_is_pdf_input "$URL"; then
+  omo_clip_pdf "$URL" "$VAULT_ROOT" "$CATEGORY" "$FILENAME"
+  exit $?
+fi
 
 # YouTube dispatch: if the URL is a YouTube link, hand off to the yt-dlp path
 # in lib/youtube-clip.sh. Returns the same exit-code shape, so callers don't

@@ -54,9 +54,10 @@ Writing pages without loading the schema will trigger CRITICAL lint issues.
 bash "$PLUGIN/scripts/clip.sh" "<URL>" "<category>" [<filename>]
 ```
 
-clip.sh dispatches on the URL:
-- **Web articles** → Playwright (headless browser) + Defuddle.
+clip.sh's first argument can be a URL **or a local file path** (since v0.0.6). It dispatches on the input:
+- **PDFs** (local path with `%PDF` magic bytes, or `https://...pdf` URL) → pdftotext (poppler-utils). Local PDFs are read in place; remote PDFs are downloaded to `/tmp` first and cleaned up after extraction. Metadata (title, author, published, page count) comes from `pdfinfo`. Override layout mode via `OMO_PDF_LAYOUT=true|false` (default `true` preserves columns/tables; `false` produces single-column flow). Pick category by topic — `papers` for academic / arxiv / IEEE PDFs, `articles` for reports/whitepapers/handouts.
 - **YouTube videos** (`youtube.com/*`, `youtu.be/*`, `m.youtube.com/*`) → automatically routed to yt-dlp subtitle extraction (manual subs preferred, auto-caption fallback). The transcript is rolling-window deduplicated and written to `_sources/<category>/<slug>.md` with the standard frontmatter shape. ==Pick `misc` as the category== for YouTube — the transcript isn't an article/paper/conversation. Subtitle language preference is `ko,en` by default; override via `OMO_YT_SUB_LANG=<lang1>,<lang2>,...` env var (e.g. `OMO_YT_SUB_LANG=en,ja`).
+- **Web articles** (everything else) → Playwright (headless browser) + Defuddle.
 
 clip.sh has three possible outcomes — branch on the exit code:
 
