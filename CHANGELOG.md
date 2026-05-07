@@ -6,6 +6,8 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 ## [Unreleased]
 
+## [0.0.4] - 2026-05-07
+
 ### Added
 
 - Codex plugin surface via `.codex-plugin/plugin.json` and a repo-local `.agents/plugins/marketplace.json`.
