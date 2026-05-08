@@ -21,7 +21,7 @@
 
 Claude Code와 Codex 플러그인. 에이전트가 볼트의 자율 큐레이터로 상주하며, 별도 프롬프트 없이:
 
-- URL을 저장하고 원본·요약·엔티티·개념 페이지로 교차 링크
+- URL · YouTube 영상 · PDF(로컬 파일 또는 원격 `*.pdf` URL)을 저장하고 원본·요약·엔티티·개념·가이드 페이지로 교차 링크
 - 볼트에 질문하면 답하고, 재사용 가치 있으면 새 페이지로 승격
 - 프로젝트 커밋 시 오래된 위키 항목을 자동 경고
 
@@ -37,7 +37,11 @@ OMO는 **답을 위키 페이지로 고정**시켜 같은 발견을 반복하지
 
 ![Knowledge compounding loop](docs/compounding.png)
 
-- **`/omo-ingest <URL>`** — 원본은 `_sources/`에 불변 저장 + LLM이 엔티티·개념·요약 페이지로 구조화해 `wiki/`에 기록
+- **`/omo-ingest <input>`** — 입력은 URL(웹 article — Playwright + Defuddle), YouTube 링크(자막 — `yt-dlp`), 또는 PDF(로컬 경로 또는 원격 `*.pdf` URL — `pdftotext`) 중 하나. 텍스트 콘텐츠는 `_sources/`에 불변 저장되고, LLM이 엔티티·개념·요약·가이드 페이지로 구조화해 `wiki/`에 기록
+
+> [!NOTE]
+> **볼트는 텍스트만 저장한다.** PDF·PPT·비디오는 *원본 그대로 들어가지 않는다* — `clip.sh`가 텍스트 콘텐츠를 추출(PDF는 `pdftotext`, YouTube는 `yt-dlp` 자막)해 `_sources/`에 markdown으로 저장하고, frontmatter의 `source-url`이 원본 위치를 가리킨다. 이유: Obsidian과 wiki layer가 markdown-native라 `Grep`·embedding·`[[wikilinks]]`가 모두 텍스트에서 동작. 바이너리는 vault git repo만 키우고 (5MB PDF가 수정마다 다시 커밋) 검색은 안 됨.
+
 - **`/omo-query <질문>`** — 3-tier 검색 후 답 합성
   1. `wiki/index.md` + `[[wikilinks]]` 그래프 순회
   2. (못 찾으면) `qmd` 하이브리드 검색 (BM25 + semantic)
@@ -85,19 +89,21 @@ Codex로 cron digest를 돌릴 때는 `OMO_DIGEST_AGENT=codex`를 설정한다. 
 ## Try it
 
 ```bash
-/omo-ingest https://www.anthropic.com/news/claude-4-7
+/omo-ingest https://www.anthropic.com/news/claude-4-7        # 웹 article
+/omo-ingest https://www.youtube.com/watch?v=<id>             # YouTube 자막
+/omo-ingest /path/to/some.pdf                                  # 로컬 PDF
 /omo-query "Claude 4.7이 이전 버전과 뭐가 다른가"
 /omo-study "prompt caching"
 ```
 
-자연어도 된다: "이 URL 위키에 추가해줘 https://...".
+자연어도 된다: "이 URL 위키에 추가해줘 https://...", "이 PDF 위키에 추가해".
 
 ## Skills
 
 | Skill                  | 역할                                                                                                 |
 | ---------------------- | ---------------------------------------------------------------------------------------------------- |
 | `/omo-init`            | 볼트 초기화 + cron 등록                                                                              |
-| `/omo-ingest`          | URL을 볼트에 수집 (원본 + 요약·엔티티·개념)                                                          |
+| `/omo-ingest`          | URL · YouTube 영상 · PDF(로컬 또는 원격)을 볼트에 수집 — 텍스트 콘텐츠는 markdown으로, 요약·엔티티·개념·가이드 페이지 자동 생성 |
 | `/omo-query`           | 볼트 검색 + 재사용 가치 있으면 자동 승격                                                             |
 | `/omo-project-add`     | 현재 git 프로젝트를 볼트에 연결                                                                      |
 | `/omo-project-analyze` | repo 분석해 `docs/architecture.md`·`docs/usage.md` 생성 — 세션 간 재사용 가능                        |
@@ -116,7 +122,7 @@ Codex로 cron digest를 돌릴 때는 `OMO_DIGEST_AGENT=codex`를 설정한다. 
 
 ## Acknowledgments
 
-[Claude Code](https://claude.com/claude-code) · [Codex](https://openai.com/codex) · [Obsidian](https://obsidian.md) · [Playwright](https://playwright.dev) · [Defuddle](https://github.com/kepano/defuddle)
+[Claude Code](https://claude.com/claude-code) · [Codex](https://openai.com/codex) · [Obsidian](https://obsidian.md) · [Playwright](https://playwright.dev) · [Defuddle](https://github.com/kepano/defuddle) · [yt-dlp](https://github.com/yt-dlp/yt-dlp) · [poppler-utils](https://poppler.freedesktop.org)
 
 ## License
 

@@ -21,7 +21,7 @@ Three layers: immutable raw sources, an LLM-curated wiki, and a schema that defi
 
 A Claude Code and Codex plugin. The agent runs as an autonomous curator for your vault — without prompts, it will:
 
-- store URLs and cross-link them with auto-generated summary / entity / concept pages
+- store URLs, YouTube videos, and PDFs (local files or remote `*.pdf` URLs) — cross-link them with auto-generated summary / entity / concept / guide pages
 - answer questions against the vault, promoting reusable answers into new pages
 - warn about stale wiki entries on project commits
 
@@ -37,7 +37,11 @@ OMO **locks answers as wiki pages** so the same discovery isn't repeated. Search
 
 ![Knowledge compounding loop](docs/compounding.png)
 
-- **`/omo-ingest <URL>`** — the original is stored immutably in `_sources/`; the LLM structures it into entity / concept / summary pages under `wiki/`
+- **`/omo-ingest <input>`** — input can be a URL (web article via Playwright + Defuddle), a YouTube link (transcript via `yt-dlp`), or a PDF (local path or remote `*.pdf` URL via `pdftotext`). The text content is stored immutably in `_sources/`; the LLM structures it into entity / concept / summary / guide pages under `wiki/`
+
+> [!NOTE]
+> **The vault stores text, not binaries.** PDFs, PPTs, and videos are *never* committed as-is — `clip.sh` extracts their text content (`pdftotext` for PDFs, `yt-dlp` captions for YouTube) and saves it as markdown in `_sources/`, while the frontmatter's `source-url` keeps a pointer back to the original. Reason: Obsidian and the wiki layer are markdown-native — `Grep`, embedding, and `[[wikilinks]]` all work on text. Binaries would bloat the vault git repo (a 5 MB PDF gets re-committed every time it's touched) without making the content searchable.
+
 - **`/omo-query <question>`** — 3-tier search, then synthesize
   1. `wiki/index.md` + `[[wikilinks]]` graph traversal
   2. (miss) `qmd` hybrid search (BM25 + semantic)
@@ -85,19 +89,21 @@ For Codex-driven cron digests, set `OMO_DIGEST_AGENT=codex`. Claude Code hooks r
 ## Try it
 
 ```bash
-/omo-ingest https://www.anthropic.com/news/claude-4-7
+/omo-ingest https://www.anthropic.com/news/claude-4-7        # web article
+/omo-ingest https://www.youtube.com/watch?v=<id>             # YouTube transcript
+/omo-ingest /path/to/some.pdf                                  # local PDF
 /omo-query "What changed in Claude 4.7 vs earlier versions"
 /omo-study "prompt caching"
 ```
 
-Natural language works too: "add this URL to the wiki https://...".
+Natural language works too: "add this URL to the wiki https://...", "이 PDF 위키에 추가".
 
 ## Skills
 
 | Skill                  | Role                                                                                                                                                |
 | ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `/omo-init`            | Initialize the vault + register cron jobs                                                                                                           |
-| `/omo-ingest`          | Ingest a URL into the vault (source + summary / entity / concept)                                                                                   |
+| `/omo-ingest`          | Ingest a URL · YouTube video · PDF (local or remote) into the vault — text content saved as markdown + summary / entity / concept / guide pages    |
 | `/omo-query`           | Search the vault + auto-promote reusable answers                                                                                                    |
 | `/omo-project-add`     | Link the current git project to the vault                                                                                                           |
 | `/omo-project-analyze` | Analyze the repo and generate `docs/architecture.md` · `docs/usage.md` under the project — reusable across sessions                                 |
@@ -116,7 +122,7 @@ Natural language works too: "add this URL to the wiki https://...".
 
 ## Acknowledgments
 
-[Claude Code](https://claude.com/claude-code) · [Codex](https://openai.com/codex) · [Obsidian](https://obsidian.md) · [Playwright](https://playwright.dev) · [Defuddle](https://github.com/kepano/defuddle)
+[Claude Code](https://claude.com/claude-code) · [Codex](https://openai.com/codex) · [Obsidian](https://obsidian.md) · [Playwright](https://playwright.dev) · [Defuddle](https://github.com/kepano/defuddle) · [yt-dlp](https://github.com/yt-dlp/yt-dlp) · [poppler-utils](https://poppler.freedesktop.org)
 
 ## License
 
